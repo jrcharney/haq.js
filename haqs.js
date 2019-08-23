@@ -97,8 +97,9 @@ const lib = {
      */
     "qac"    : parent => (query,all) => child   => lib.content.ac(lib.query.qs(parent)(query,all))(child)
   },
-  // @namespace info 
-  // @desc Information directive: Get more info about stuff
+  /* @namespace info 
+   * @desc Information directive: Get more info about stuff
+   */
   "info" : {
     "cn"  : el => el.constructor.name,
     "is"  : el => type => typeof(el) === type,
@@ -111,17 +112,19 @@ const lib = {
     "isB" : el => lib.info.is(el)("boolean"),
     // Who else am I forgetting?
   },
-  // @namespace: array
-  // @desc Array directive: Common array tasks simplified
-  // @todo I might just eliminate this. I only created it to reduce the amount of typing. 
-  //      Kind of redundant now, isn't it?
+  /* @namespace: array
+   * @desc Array directive: Common array tasks simplified
+   * @todo I might just eliminate this. I only created it to reduce the amount of typing. 
+   *      Kind of redundant now, isn't it?
+   */
   "array" : {
     "oem" : o => cb => Object.entries(o).map(cb),
     "afm" : o => cb => Array.from(o).map(cb)
   },
-  // @namespace: math
-  // @desc Math directive: The stuff ES6+ forgot
-  // @todo range directive (Ruby and Python have them)
+  /* @namespace: math
+   * @desc Math directive: The stuff ES6+ forgot
+   * @todo range directive (Ruby and Python have them)
+   */
   "math" : {
     /* @func: clamp
      * @desc: define the lower and upper limits of an accepted value.
@@ -146,30 +149,34 @@ const lib = {
 	    return Math.floor(Math.random() * (max - min + im)) + min;
     }
   },
-  // @namespace re
-  // @desc Regular Expression directive: common patterns
-  // NOTE: ALWAYS quote your values
-  // @todo Do not allow spaces in the attrs RE!
+  /* @namespace re
+   * @desc Regular Expression directive: common patterns
+   * NOTE: ALWAYS quote your values
+   * @todo Do not allow spaces in the attrs RE!
+   */
   "re" : {
-    // @namespace pattern
-    // @desc the patterns used for each match and assign function
+    /* @namespace pattern
+     * @desc the patterns used for each match and assign function
+     */
     "pattern" : {
       "tag"     : /^\w+/g,
       "attrs"   : /\[\w+=["']?\w+["']?\]/g,
       "id"      : /#\w+/g,
       "classes" : /\.[\w]+/g
     },
-    // @namespace match
-    // @desc determine if the input string argument (s) matches the pattern
-    // Note: String.prototype.match returns an Array
+    /* @namespace match
+     * @desc determine if the input string argument (s) matches the pattern
+     * Note: String.prototype.match returns an Array
+     */
     "match" : {
       "tag"     : s => s.match(lib.re.pattern.tag),
       "attrs"   : s => s.match(lib.re.pattern.attrs),
       "id"      : s => s.match(lib.re.pattern.id),
       "classes" : s => s.match(lib.re.pattern.classes)
     },
-    // @namespace assign
-    // @desc using an input array, apply the data accordingly if the array is not null
+    /* @namespace assign
+     * @desc using an input array, apply the data accordingly if the array is not null
+     */
     "assign" : {
       "tag"     : a => lib.create.qce(a[0]),
       "attrs"   : a => Object.fromEntries(a.map(ta => ta.replace(/\[(\w+)=["']?(\w+)["']?\]/,"$1;$2").split(";"))),
@@ -177,20 +184,23 @@ const lib = {
       "classes" : a => a.map(cl => cl = cl.slice(1)).join(" "), // slice removes the "." at the beginning of the string.
     }
   },
-  // @namespace: create
-  // @desc Create directive: create new things
+  /* @namespace: create
+   * @desc Create directive: create new things
+   */
   "create" : {
-    // @func qce
-    // @desc Quick Create Element: No attributes, just do it.
-    // @param tag:String : the HTML or SVG element to create.
-    // @returns Elment
-    // @todo I may consider retiring this function
+    /* @func qce
+     * @desc Quick Create Element: No attributes, just do it.
+     * @param tag:String : the HTML or SVG element to create.
+     * @returns Element
+     * @todo I may consider retiring this function
+     */
     "qce" : tag => document.createElement(tag),
-    // @func ce
-    // @desc ce (Create Element) uses Regular Expression to extract any other attributes from the tag
-    // @param tag:String : the HTML or SVG element to create with optional embedded CSS-style attributes
-    // @param ao:Object : key-value object of attributes
-    // @returns Element
+    /* @func ce
+     * @desc ce (Create Element) uses Regular Expression to extract any other attributes from the tag
+     * @param tag:String : the HTML or SVG element to create with optional embedded CSS-style attributes
+     * @param ao:Object : key-value object of attributes
+     * @returns Element
+     */
     "ce" : tag => ao => {
       // TODO: remove spaces from tag (there shouldn't be any)
       // TODO: Throw exception if the tag is not first or defined
@@ -221,16 +231,20 @@ const lib = {
       return el;
     }
   },
-  // @namespace delete
-  // @desc Delete directive: remove old stuff
-  // @todo I may consider replacing this by merging it with the create directive.
-  //  Maybe consider a "CRUD" layout (Create, Read (query), Update (edit), Destroy)
+  /* @namespace delete
+   * @desc Delete directive: remove old stuff
+   * @todo I may consider replacing this by merging it with the create directive.
+   *  Maybe consider a "CRUD" layout (Create, Read (query), Update (edit), Destroy)
+   */
   "delete" : {
-    // de : Delete Element(s), opposite of ce.
+    /* @func de
+     * @desc de : Delete Element(s), opposite of ce.
+     */
     "de" : el => lib.info.isA(el) ? el.map(el => el.remove()) : el.remove()
   },
-  // @namespace edit
-  // @desc Edit directive: Edit an array of things
+  /* @namespace edit
+   * @desc Edit directive: Edit an array of things
+   */
   "edit" : {    
     /* @func aa
      * @desc "Apply Attributes" (formerly "attrs" but there's like a ton of stuff named that)
