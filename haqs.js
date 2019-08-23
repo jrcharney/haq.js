@@ -117,7 +117,7 @@ var lib = {
     "get" : el => prop => el.style.getPropertyValue(prop),
     "set" : el => (prop,val,imp) => el.style.setProperty(prop,val,(imp||false)?"important":"")
   },
-  // add conent
+  // add content
   "content" : {
     "text" : el => val => lib.info.isU(val) ? el.innerText : (el.innerText = val),
     "html" : el => val => lib.info.isU(val) ? el.innerHTML : (el.innerHTML = val),
