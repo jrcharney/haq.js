@@ -1,7 +1,8 @@
 /* @file: haqs.js
  * @author: Jason Charney (jrcharney@gmail.com)
- * @version: 0.1.0
+ * @version: 0.2.0
  * @see TODO.md for a list of TODO items and other things that probably should be done.
+ * @todo animate directive
  */
 const lib = {
   /* @namespace query
@@ -12,44 +13,49 @@ const lib = {
      * @desc : querySelect[All] an object
      * @param : parent:String|Node|Document : the parent element, if it is a string, it is qs'd, if empty is is set to the @default document.
      * @param : query:String : CSS-style query string to find an object or objects
-     * @param : all:Boolean : @default false
+     * @param : all:Boolean : @default false [Removed]
      * @returns: Node or NodeList
+     * NOTE: query can have commas in it for multiple queries. (Probably shouldn't do that for parent though)
      */
-    "qs"     : parent => (query,all) => lib.info.isS(parent) ? lib.query.qs(lib.query.qs()(parent))(query,all) : (parent||document)[`querySelector${(all||false)?"All":""}`](query),
+    //"qs"     : parent => (query,all) => lib.info.isS(parent) ? lib.query.qs(lib.query.qs()(parent))(query,all) : (parent||document)[`querySelector${(all||false)?"All":""}`](query),
+    "qs"       : parent => query => {let q; return lib.info.isS(parent) ? lib.query.qs(lib.query.qs()())(query) : (q = (parent||document).querySelectAll(query)).length === 0 ? null : qs.length === 1 ? q[0] : q;},
     /* @func: qa
      * @desc: Do a qs then apply attributes (aa).
      * @param : parent:String|Node|Document : the parent element, if it is a string, it is qs'd, if empty is is set to the @default document.
      * @param : query:String : CSS-style query string to find an object or objects
-     * @param : all:Boolean : @default false
+     * @param : all:Boolean : @default false [Removed]
      * @param : ao:Object : key-value list
      * @returns: Node or NodeList
      */
-    "qa"     : parent => (query,all) => ao      => lib.edit.aa(lib.query.qs(parent)(query,all))(ao),
+    //"qa"     : parent => (query,all) => ao      => lib.edit.aa(lib.query.qs(parent)(query,all))(ao),
+    "qa"     : parent => query => ao => lib.edit.aa(lib.query.qs(parent)(query))(ao),
     /* @func: qattrs
      * @desc: Similar to qa but applies only regular attributes
      * @param : parent:String|Node|Document : the parent element, if it is a string, it is qs'd, if empty is is set to the @default document.
      * @param : query:String : CSS-style query string to find an object or objects
-     * @param : all:Boolean : @default false
+     * @param : all:Boolean : @default false [Removed]
      * @param : ao:Object : key-value list of attributes
      * @returns: Node or NodeList
      * @todo if ao is not defined, return an object containing attributes (Note it may only be a shallow object)
      */
-    "qattrs" : parent => (query,all) => ao      => lib.edit.attrs(lib.query.qs(parent)(query,all))(ao),
+    //"qattrs" : parent => (query,all) => ao      => lib.edit.attrs(lib.query.qs(parent)(query,all))(ao),
+    "qattrs" : parent => query => ao      => lib.edit.attrs(lib.query.qs(parent)(query))(ao),
     /* @func: qcss
      * @desc: Similar to qa but applies only styles in a CSS style object format
      * @param : parent:String|Node|Document : the parent element, if it is a string, it is qs'd, if empty is is set to the @default document.
      * @param : query:String : CSS-style query string to find an object or objects
-     * @param : all:Boolean : @default false
+     * @param : all:Boolean : @default false [Removed]
      * @param : co:Object : key-value list of CSS styles
      * @returns: Node or NodeList
      * @todo If co is not defined, return an object list if items exist
      */
-    "qcss"   : parent => (query,all) => co      => lib.edit.css(lib.query.qs(parent)(query,all))(co),
+    //"qcss"   : parent => (query,all) => co      => lib.edit.css(lib.query.qs(parent)(query,all))(co),
+    "qcss"   : parent => query => co      => lib.edit.css(lib.query.qs(parent)(query))(co),
     /* @func: qon
      * @desc: Similar to qa but applies only events
      * @param : parent:String|Node|Document : the parent element, if it is a string, it is qs'd, if empty is is set to the @default document.
      * @param : query:String : CSS-style query string to find an object or objects
-     * @param : all:Boolean : @default false
+     * @param : all:Boolean : @default false [Removed]
      * @param : ao:Object : key-value list, 
      *    where the key is the name of an event (without the old "on" prefix!) 
      *    and the value is a function to run when that event occurs.
@@ -57,45 +63,53 @@ const lib = {
      * @todo If eo is not defined, return an object list if items exists
      * @todo qoff for removed event listeners?
      */
-    "qon"    : parent => (query,all) => eo      => lib.edit.on(lib.query.qs(parent)(query,all))(eo),
-    //"qoff" : parent => (query,all) => eo => {}
+    //"qon"    : parent => (query,all) => eo      => lib.edit.on(lib.query.qs(parent)(query,all))(eo),
+    "qon"    : parent => query => eo      => lib.edit.on(lib.query.qs(parent)(query))(eo),
+    //"qoff" : parent => query => eo => {}
     /* @func: qh
      * @desc: Similar to qa but applies HTML content
      * @param : parent:String|Node|Document : the parent element, if it is a string, it is qs'd, if empty is is set to the @default document.
      * @param : query:String : CSS-style query string to find an object or objects
-     * @param : all:Boolean : @default false
+     * @param : all:Boolean : @default false [Removed]
      * @param : content:String|Object : The content to fill an element.
      * @returns: Node or NodeList or String
      * @todo: if content is undefined, return the content that is already there if it exists
+     * @todo: appending text and prepending text
      */
-    "qh"     : parent => (query,all) => content => lib.edit.html(lib.query.qs(parent)(query,all))(content),
+    //"qh"     : parent => (query,all) => content => lib.edit.html(lib.query.qs(parent)(query,all))(content),
+    "qh"     : parent => query => content => lib.edit.html(lib.query.qs(parent)(query))(content),
     /* @func: qhtml
      * @desc: Similar to qa and less detailed than qh, qhtml simply sets or gets the HTML content of a qs'd object. 
      * @param : parent:String|Node|Document : the parent element, if it is a string, it is qs'd, if empty is is set to the @default document.
      * @param : query:String : CSS-style query string to find an object or objects
-     * @param : all:Boolean : @default false
+     * @param : all:Boolean : @default false [Removed]
      * @param : text:String : HTML text that can be processed. (You should really use DOM via ce or q-something)
      * @returns: Node or NodeList or String
+     * @todo: appending text and prepending text
      */
-    "qhtml"  : parent => (query,all) => text    => lib.content.html(lib.query.qs(parent)(query,all))(text),
+    //"qhtml"  : parent => (query,all) => text    => lib.content.html(lib.query.qs(parent)(query,all))(text),
+    "qhtml"  : parent => query => text    => lib.content.html(lib.query.qs(parent)(query))(text),
     /* @func: qtext
      * @desc: Similar to qa and less detailed than qs, qtext simply sets or gets the TEXT content of a qs'd object
      * @param : parent:String|Node|Document : the parent element, if it is a string, it is qs'd, if empty is is set to the @default document.
      * @param : query:String : CSS-style query string to find an object or objects
-     * @param : all:Boolean : @default false
+     * @param : all:Boolean : @default false [Removed]
      * @param : text:String : raw text
      * @returns: Node or NodeList
+     * @todo: appending text and prepending text
      */
-    "qtext"  : parent => (query,all) => text    => lib.content.text(lib.query.qs(parent)(query,all))(text),
+    //"qtext"  : parent => (query,all) => text    => lib.content.text(lib.query.qs(parent)(query,all))(text),
+    "qtext"  : parent => query => text    => lib.content.text(lib.query.qs(parent)(query))(text),
     /* @func: qac
      * @desc: query an object then append children to it. A simplified version of qh.
      * @param : parent:String|Node|Document : the parent element, if it is a string, it is qs'd, if empty is is set to the @default document.
      * @param : query:String : CSS-style query string to find an object or objects
-     * @param : all:Boolean : @default false
+     * @param : all:Boolean : @default false [Removed]
      * @param : ao:Object|Array|Node|NodeList : Elements to be appended
      * @returns: Node or NodeList
      */
-    "qac"    : parent => (query,all) => child   => lib.content.ac(lib.query.qs(parent)(query,all))(child)
+    //"qac"    : parent => (query,all) => child   => lib.content.ac(lib.query.qs(parent)(query,all))(child)
+    "qac"    : parent => query => child   => lib.content.ac(lib.query.qs(parent)(query))(child)
   },
   /* @namespace info 
    * @desc Information directive: Get more info about stuff
@@ -308,44 +322,88 @@ const lib = {
     "del"    : el => name => el.removeAttribute(name),
     "toggle" : el => name => !lib.attr.has(el)(name) ? lib.attr.add(el)(name) : lib.attr.del(el)(name)  
   },
-  // Properties Directive: property states
-  // TODO: Should this be merged into the Info directive?
+  /* @namespace prop
+   * @desc Properties Directive: property states
+   * @todo Should this be merged into the Info directive?
+   */
   "prop" : {
     "checked"  : el => lib.attr.has(el)("checked"),
     "disabled" : el => lib.attr.has(el)("disabled")
   },
-  // Events Directive: add and remove events
-  // @todo: What if evt is a string with spaces in it or an array of string values?
-  //        This can be useful for apply a call back to multiple events!
+  /* @namespace event
+   * @desc Events Directive: add and remove events
+   * @todo What if evt is a string with spaces in it or an array of string values?
+   *       This can be useful for apply a call back to multiple events!
+   * @todo Consider a utility function to simplify our code [Done]
+   */
   "event" : {
-    "on"  : evt => el => (cb,cap) => el.addEventListener(evt,cb,(cap||false)),
-    "off" : evt => el => (cb,cap) => el.removeEventListener(evt,cb,(cap||false))
+    /* @func ear
+     * @desc utility function for on and off
+     * @param evt : String : An event or list of space-separated events
+     * @param el : Element
+     * @param fn : Boolean. If true, "add" or false "remove"
+     * @param cb : Function : callback function. Could have one argument in it?
+     * @param cap : Boolean or Object. @default false. Generally indicates if the event was captured. Generally, the answer is no (false).
+     * @todo What if there are commas in evt? (Mod the RE)
+     * @todo How would I capture multiple events?
+     */
+    "ear"  : evt => (el,fn) => (cb,cap) => /\s+/g.test(evt) ? lib.event.ear(evt.split(/\s+/))(el,fn)(cb,cap)  : Array.isArray(evt) ? evt.map(e => lib.event.ear(e)(el,fn)(cb,cap))  : el[`${(fn)?"add":"remove"}EventListener`](evt,cb,(cap||false)),
+
+    //"on"  : evt => el => (cb,cap) => el.addEventListener(evt,cb,(cap||false)),
+    //"off" : evt => el => (cb,cap) => el.removeEventListener(evt,cb,(cap||false))
+
+    /* @func on
+     * @desc Add an EventListener to an Element
+     * @param evt : String : An event or string of events
+     * @param el : Element
+     * @param cb : Function
+     * @param cap : Boolean|Object, @default false
+     */
+    "on" : evt => el => (cb,cap) => lib.event.ear(evt)(el,true)(cb,cap),
+    /* @func off
+     * @desc Remove an EventListener from an Element
+     * @param evt : String : An event or string of events
+     * @param el : Element
+     * @param cb : Function
+     * @param cap : Boolean|Object, @default false
+     */
+    "off" : evt => el => (cb,cap) => lib.event.ear(evt)(el,false)(cb,cap)
   },
-  // CSS Directive: set and get css attributes
-  // CSS is entered a lot like jQuery as an object, 
-  // such that if you aren't familiar with the JavaScript names for CSS properties, 
-  // you can just us the CSS property names as keys of an object
-  // TODO: test to see if a style has a property set.
+  /* @namespace css
+   * @desc CSS Directive: set and get css attributes
+   *       CSS is entered a lot like jQuery as an object, 
+   *       such that if you aren't familiar with the JavaScript names for CSS properties, 
+   *       you can just us the CSS property names as keys of an object
+   * @todo test to see if a style has a property set.
+   */
   "css" : {
     "css" : el => (prop,val,imp) => lib.info.isU(val) ? lib.css.get(el)(prop) : lib.css.set(el)(prop,val,imp),
     // "has" : el => prop => {},
     "get" : el => prop => el.style.getPropertyValue(prop),
     "set" : el => (prop,val,imp) => el.style.setProperty(prop,val,(imp||false)?"important":"")
   },
-  // Classes Directive: set and get classes
-  // TODO: Should I consider using spread and rest parameters here?
+  /* @namespace classes
+   * @desc Classes Directive: set and get classes
+   * @todo Should I consider using spread and rest parameters in lib.classes.classes?
+   */
   "classes" : {
     "classes" : el => cl => lib.info.isU(cl) ? lib.classes.get() : lib.classes.set(cl), // TODO: test cl to see if it is an array or string?
-    "get" : el => el.className,     // returns a (space-separated) String
-    "set" : el => cl => el.className = cl,
-    "list" : el => el.classList,    // returns a DOMToken array, not an Array.
-    "has" : el => cl => el.classList.contains(cl),
-    "add" : el => cl => el.classList.add(cl), // TODO: could use a spread and rest parameter
-    "del" : el => cl => el.classList.remove(cl),  // TODO: could use a spread and rest parameter
-    "toggle"  : el => (cl,force) => el.classList.toggle(cl,(force||false)),
-    "replace" : el => (old_cl, new_cl) => el.classList.replace(old_cl,new_cl) // TODO: could we do this globally?
+    "list"    : el       => el.classList,     // returns a DOMToken array, not an Array.
+    "get"     : el       => el.className,     // returns a (space-separated) String
+    "set"     : el => cl => el.className = cl,
+    "has"     : el => cl => el.classList.contains(cl),
+    "add"     : el => cl => el.classList.add(cl), // TODO: could use a spread and rest parameter
+    "del"     : el => cl => el.classList.remove(cl),  // TODO: could use a spread and rest parameter
+    "toggle"  : el => (cl,force)      => el.classList.toggle(cl,(force||false)),
+    "replace" : el => (old_cl,new_cl) => el.classList.replace(old_cl,new_cl) // TODO: could we do this globally?
   },
-  // Content Directive: add content
+  /* @namespace content
+   * @desc Content Directive: add content
+   * @todo append and prepend text for text and html 
+   *  (I thought I could use a boolean: true for prepend, false for append, false being default, but these two functions are getter/setter)
+   * @todo Should I use .append() instead of .appendChild()?
+   * @todo pc (prepend child) which could use .prepend() if it exists. (or we could modify ac)
+   */
   "content" : {
     "text" : el => val => lib.info.isU(val) ? el.innerText : (el.innerText = val),
     "html" : el => val => lib.info.isU(val) ? el.innerHTML : (el.innerHTML = val),
