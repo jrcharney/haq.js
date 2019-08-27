@@ -1,6 +1,6 @@
 /* @file: haqs.js
  * @author: Jason Charney (jrcharney@gmail.com)
- * @version: 0.0.1
+ * @version: 0.1.0
  * @see TODO.md for a list of TODO items and other things that probably should be done.
  */
 const lib = {
